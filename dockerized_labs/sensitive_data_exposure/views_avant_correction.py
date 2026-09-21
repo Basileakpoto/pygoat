@@ -126,8 +126,8 @@ def all_users_data_view(request):
         })
     
     # In a secure application, we would add:
-    if not request.user.is_authenticated or not request.user.is_staff:
-        return JsonResponse({'error': 'Unauthorized'}, status=401)
+    # if not request.user.is_authenticated or not request.user.is_staff:
+    #     return JsonResponse({'error': 'Unauthorized'}, status=401)
     
     return JsonResponse({'users': all_users_data})
 

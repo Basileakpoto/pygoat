@@ -10,7 +10,7 @@ This lab demonstrates how sensitive information (like credit cards, SSNs, and AP
 
 ### What You'll Need
 
-- Docker and Docker Compose (that's it!)
+- Docker and (that's it!)
 
 ### How to Run It
 
