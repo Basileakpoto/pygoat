@@ -30,7 +30,9 @@ jobs:
 
       - name: Exécuter les tests Django
         run: python manage.py test dataexposure
-              - name: Analyser le code avec Bandit
+                    
+
+      - name: Analyser le code avec Bandit
         run: |
           python -m pip install bandit
           python -m bandit -r dataexposure -f json -o bandit_ci.json || true
