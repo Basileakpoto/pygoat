@@ -147,7 +147,40 @@
                     </div>
                 </div>
             </div>
-            
+            <div class="col-lg-8 mt-4">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Modifier mes données fictives</h5>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+
+                {{ form.non_field_errors }}
+
+                <div class="mb-3">
+                    <label for="{{ form.credit_card.id_for_label }}" class="form-label">
+                        Numéro de carte fictif
+                    </label>
+                    {{ form.credit_card }}
+                    {{ form.credit_card.errors }}
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.ssn.id_for_label }}" class="form-label">
+                        Identifiant fictif
+                    </label>
+                    {{ form.ssn }}
+                    {{ form.ssn.errors }}
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    Enregistrer les données fictives
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
             <div class="col-lg-4">
                 <div class="card challenge-card mb-4">
                     <div class="card-header bg-warning">

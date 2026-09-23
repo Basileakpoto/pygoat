@@ -28,3 +28,22 @@ class ControleAccesAPITest(TestCase):
 
         reponse = self.client.get('/api/all-users/')
         self.assertEqual(reponse.status_code, 200)
+from .forms import UserDataForm
+
+
+class TestValidationFormulaire(TestCase):
+
+    def test_carte_avec_lettre_refusee(self):
+        formulaire = UserDataForm(data={
+            "credit_card": "411111111111111a",
+            "ssn": "987654321",
+        })
+        self.assertFalse(formulaire.is_valid())
+        self.assertIn("credit_card", formulaire.errors)
+
+    def test_carte_valide_acceptee(self):
+        formulaire = UserDataForm(data={
+            "credit_card": "4111111111111111",
+            "ssn": "987654321",
+        })
+        self.assertTrue(formulaire.is_valid())
