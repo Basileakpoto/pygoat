@@ -16,7 +16,7 @@ class ControleAccesAPITest(TestCase):
         self.client.force_login(utilisateur)
 
         reponse = self.client.get('/api/all-users/')
-        self.assertEqual(reponse.status_code, 401)
+        self.assertEqual(reponse.status_code, 403)
 
     def test_utilisateur_staff(self):
         utilisateur = User.objects.create_user(

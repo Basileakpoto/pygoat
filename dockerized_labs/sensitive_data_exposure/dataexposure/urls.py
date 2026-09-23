@@ -7,6 +7,7 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('register/', views.register_view, name='register'),
     path('profile/', views.profile_view, name='profile'),
+    path('staff/', views.staff_dashboard, name='staff_dashboard'),
     
     # API endpoints demonstrating insecure data exposure (for educational purposes)
     path('api/user-data/', views.api_data_view, name='api_data'),

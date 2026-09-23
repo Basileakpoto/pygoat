@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Espace staff — Sensitive Data Lab</title>
+</head>
+<body>
+    <h1>Espace staff</h1>
+    <p>Connecté en tant que : {{ request.user.username }}</p>
+
+    <h2>Utilisateurs du laboratoire</h2>
+
+    <table border="1" cellpadding="10">
+        <tr>
+            <th>Utilisateur</th>
+            <th>Carte fictive</th>
+            <th>Identifiant fictif</th>
+        </tr>
+
+        {% for donnees in utilisateurs %}
+        <tr>
+            <td>{{ donnees.user.username }}</td>
+            <td>************{{ donnees.credit_card|slice:"-4:" }}</td>
+            <td>*****{{ donnees.ssn|slice:"-4:" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3">Aucun utilisateur.</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <p><a href="{% url 'profile' %}">Retour au profil</a></p>
+</body>
+</html>

@@ -44,11 +44,18 @@
                     <a class="nav-link" href="{% url 'about' %}">About</a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link" href="{% url 'profile' %}">Profile</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-                </li>
+    <a class="nav-link" href="{% url 'profile' %}">Profile</a>
+</li>
+
+{% if user.is_staff %}
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'staff_dashboard' %}">Espace staff</a>
+</li>
+{% endif %}
+
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+</li>
             </ul>
         </div>
     </nav>

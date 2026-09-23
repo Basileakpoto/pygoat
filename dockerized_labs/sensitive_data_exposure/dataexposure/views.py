@@ -122,27 +122,30 @@ def api_data_view(request):
     # cuz we're teaching about data exposure, duh!
     return JsonResponse(data)
 
-# Intentionally insecure - for teaching purposes!
 def all_users_data_view(request):
-    # MAJOR SECURITY FLAW: This endpoint allows ANY user (even unauthenticated ones!)
-    # to see ALL users' sensitive data!
-    # This demonstrates why proper authentication/authorization is essential.
-    
-    # Note for students: Notice how there are no checks for who's requesting the data!
+    # Vérifier les droits AVANT de consulter les données
+    if not request.user.is_authenticated:
+        return JsonResponse(
+            {'error': 'Authentication required'},
+            status=401
+        )
 
+    if not request.user.is_staff:
+        return JsonResponse(
+            {'error': 'Staff access required'},
+            status=403
+        )
+
+    # Le staff ne reçoit que les informations nécessaires
     all_users_data = []
-    for user_data in UserData.objects.all():
+
+    for user_data in UserData.objects.select_related('user').all():
         all_users_data.append({
             'username': user_data.user.username,
-            'credit_card': user_data.credit_card,  # Completely exposed! No masking!
-            'ssn': user_data.ssn,  # Sending full SSN - terrible practice!
-            'api_key': user_data.api_key  # API keys should never be exposed like this
+            'credit_card': '************' + user_data.credit_card[-4:],
+            'ssn': '*****' + user_data.ssn[-4:],
         })
-    
-    # In a secure application, we would add:
-    if not request.user.is_authenticated or not request.user.is_staff:
-        return JsonResponse({'error': 'Unauthorized'}, status=401)
-    
+
     return JsonResponse({'users': all_users_data})
 
 def logout_view(request):
@@ -154,3 +157,14 @@ def logout_view(request):
 def sensitive_data_exposure_lesson(request):
     # lessons page
     return render(request, 'lesson.html')
+
+@login_required
+def staff_dashboard(request):
+    if not request.user.is_staff:
+        return render(request, 'staff_access_denied.html', status=403)
+
+    utilisateurs = UserData.objects.select_related('user').all()
+
+    return render(request, 'staff_dashboard.html', {
+        'utilisateurs': utilisateurs,
+})
