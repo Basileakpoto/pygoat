@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
 from django.contrib import messages
 from .models import UserData
-from .forms import UserLoginForm, UserRegisterForm
+from .forms import UserLoginForm, UserRegisterForm, UserDataForm
 import random
 import string
 
@@ -67,21 +67,35 @@ def register_view(request):
 
 @login_required
 def profile_view(request):
-    # show user profile with some data masked
-    try:
-        user_data = UserData.objects.get(user=request.user)
-        # TODO: add audit logging here someday
-    except UserData.DoesNotExist:
-        # If no user data exists, create some dummy data for demo
-        # This should never happen but just in case
-        print(f"Creating missing user data for {request.user.username}")  # debugging stuff
-        user_data = UserData.objects.create(
-            user=request.user,
-            credit_card='4111111111111111',  # test visa card number lol
-            ssn='123456789',  # not a real SSN obvs
-            api_key=generate_api_key()  # not very secure api key but whatever
-        )
-    return render(request, 'profile.html', {'user_data': user_data})
+    user_data, created = UserData.objects.get_or_create(
+        user=request.user,
+        defaults={
+            'credit_card': '4111111111111111',
+            'ssn': '123456789',
+            'api_key': generate_api_key(),
+        }
+    )
+
+    if request.method == 'POST':
+        form = UserDataForm(request.POST)
+
+        if form.is_valid():
+            user_data.credit_card = form.cleaned_data['credit_card']
+            user_data.ssn = form.cleaned_data['ssn']
+            user_data.save(update_fields=['credit_card', 'ssn'])
+
+            messages.success(request, 'Données fictives enregistrées.')
+            return redirect('profile')
+    else:
+        form = UserDataForm(initial={
+            'credit_card': user_data.credit_card,
+            'ssn': user_data.ssn,
+        })
+
+    return render(request, 'profile.html', {
+        'user_data': user_data,
+        'form': form,
+    })
 
 @login_required
 def api_data_view(request):
